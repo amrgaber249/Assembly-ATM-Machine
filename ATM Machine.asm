@@ -1,7 +1,6 @@
 
 ;Name:Amr Mohamed Gaber
-;_ID_:4818
-;-Group: 1 -Section: 1
+
 
 name 'ATM Machine'
 
