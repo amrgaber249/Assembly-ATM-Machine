@@ -23,10 +23,10 @@ DATAP DB  5,?,5 DUP (?) ; current password
 
 
 .code
-MAIN	    PROC
-			MOV AX,@DATA 		; Initialize AX, DS & ES data segment offset 
-            MOV DS,AX			; 
-            MOV ES,AX  			;
+MAIN	   	 PROC
+	   		MOV AX,@DATA 			; Initialize AX, DS & ES data segment offset 
+            		MOV DS,AX			; 
+           		MOV ES,AX  			;
 			
 			
 START:		
@@ -42,14 +42,14 @@ START:
 			
 CLRSCR		PROC
 			MOV AX,03H			; reset cursor to the start and-
-            INT 10H				; clear everything
+           	        INT 10H				; clear everything
 			CALL NWLINE			; make a new line
 			RET
 CLRSCR		ENDP	
 
 
 NWLINE		PROC
-			LEA DX,linefeed		; get message
+			LEA DX,linefeed			; get message
 			MOV AH,09H			; display string function 
 			INT  21H			; display message 
 			RET
@@ -65,131 +65,131 @@ WLCM		PROC
 WLCM		ENDP	
 
 
-VCRD        PROC
-            LEA  DX,MSG4		; get message 
+VCRD      	  PROC
+            		LEA  DX,MSG4			; get message 
 			MOV  AH,09H			; display string function 
 			INT  21H			; display message 
 			CALL CRDIN			; card is inside atm machine
-			LEA  SI,DATAC+2		; move the card number to SI
+			LEA  SI,DATAC+2			; move the card number to SI
 			CALL SETCMP			; put the card number into AX for vladiation
-			CALL CRDCHCK		; check if card is valid
+			CALL CRDCHCK			; check if card is valid
 			RET
-VCRD        ENDP
+VCRD       	 ENDP
 
 
-VPWD        PROC
-            LEA  DX,MSG1		; get message 
+VPWD       	 PROC
+            		LEA  DX,MSG1			; get message 
 			MOV  AH,09H			; display string function 
 			INT  21H			; display message 
 			CALL PWDIN			; a password is entered 
-			LEA  SI,DATAP+2		; move the password to SI
+			LEA  SI,DATAP+2			; move the password to SI
 			CALL SETCMP			; put the password into AX for vladiation
-			CALL PWDCHCK		; check if password is valid
+			CALL PWDCHCK			; check if password is valid
 			RET
-VPWD        ENDP
+VPWD     	ENDP
 
 
-CRDIN       PROC				
-            LEA DX,DATAC		; load the empty card list
-            MOV AH,0AH			; scan user input
-            INT 21H 			;
-            RET
-CRDIN       ENDP
+CRDIN      	PROC				
+           		LEA DX,DATAC			; load the empty card list
+            		MOV AH,0AH			; scan user input
+           		INT 21H 			;
+           		RET
+CRDIN     	ENDP
 
 
-PWDIN       PROC				
-            LEA DX,DATAP		; load the empty password list
-            MOV AH,0AH			; scan user input
-            INT 21H 			; 
-            RET
-PWDIN       ENDP
+PWDIN       	PROC				
+            		LEA DX,DATAP			; load the empty password list
+            		MOV AH,0AH			; scan user input
+            		INT 21H 			; 
+            		RET
+PWDIN      	ENDP
 
 
-CRDCHCK     PROC
-            MOV CX,21            ; SET CX = 21 people
-            LEA DI,DATA1         ; SET DI = DATA1 offset (list of Card Numbers)
-            CLD                  ; DF = 0 (AUTO INCREAMENT) to traverse through the list
-            REPNE SCASW          ; Check if the card is valid(COMPARE AX WITH DI)
-            CMP CX,0         	 ; could not find it in the 20 customers ?
-            JZ WRNGCRD           ; If it is not valid go to WRNGCRD
-            RET        
-CRDCHCK     ENDP  
+CRDCHCK     	PROC
+            		MOV CX,21            		; SET CX = 21 people
+            		LEA DI,DATA1         		; SET DI = DATA1 offset (list of Card Numbers)
+            		CLD                  		; DF = 0 (AUTO INCREAMENT) to traverse through the list
+            		REPNE SCASW          		; Check if the card is valid(COMPARE AX WITH DI)
+            		CMP CX,0         	 	; could not find it in the 20 customers ?
+            		JZ WRNGCRD           		; If it is not valid go to WRNGCRD
+            		RET        
+CRDCHCK     	ENDP  
 
 
-PWDCHCK     PROC
-            MOV BX,AX			 ; to not change AX
-            ADD DI,38			 ; jump to the same index in list of Passwords
-            CMP BX,[DI]          ; Check if the password correct or not    
-            JNZ WRNGPWD          ; If it is not valid go to WRNGCRD
-            RET          
-PWDCHCK     ENDP 
+PWDCHCK     	PROC
+            		MOV BX,AX			; to not change AX
+            		ADD DI,38			; jump to the same index in list of Passwords
+            		CMP BX,[DI]          		; Check if the password correct or not    
+            		JNZ WRNGPWD          		; If it is not valid go to WRNGCRD
+            		RET          
+PWDCHCK     	ENDP 
 
 
-WRNGCRD     PROC 
+WRNGCRD     	PROC 
 			CALL NWLINE			; make a new line
-            LEA DX,MSG5			; get message 
+            		LEA DX,MSG5			; get message 
 			MOV AH,09H			; display string function 
 			INT 21H				; display message 
 			MOV CX,0F0H			; timer so the screen does not change too quickly
 			LOOP $				;
-            JMP START			; restart the machine to accept a new card
-            RET
-WRNGCRD     ENDP
+            		JMP START			; restart the machine to accept a new card
+            		RET
+WRNGCRD     	ENDP
 
 
-WRNGPWD     PROC 
+WRNGPWD     	PROC 
 			CALL NWLINE			; make a new line
-            LEA DX,MSG2			; get message 
+            		LEA DX,MSG2			; get message 
 			MOV AH,09H			; display string function 
 			INT 21H				; display message 
 			MOV CX,0F0H			; timer so the screen does not change too quickly
 			LOOP $				;
-            JMP START			; restart the machine to accept a new card
-            RET
-WRNGPWD     ENDP
+            		JMP START			; restart the machine to accept a new card
+            		RET
+WRNGPWD     	ENDP
 
 
-SETCMP      PROC 
-            MOV CX,4			; 4-number input
-LOOP1:	    CMP [SI],39H		; is it a number ?
-            JBE NUM         	; if yes, go to num case
-            JA  LETR    		; o.w. go to letr case
-NUM:        SUB [SI],30H		; change the number character from ascii to hexa
-            JMP INCR         	; increment the counter and goto next element
-LETR:       CMP [SI],46H		; find if the letter in upper or lower case
-            JBE UPPER			; case1 if it was upper
-            JA  LOWER			; case2 if it was lower
-UPPER :     SUB [SI],37h		; change the lower case letter from ascii to hexa
-            JMP INCR 			; increment the counter and goto next element
-LOWER:      SUB [SI],57H		; change the upper case letter from ascii to hexa	       		
-INCR:       INC SI 				; goto next element
-            DEC CX   			; sub from counter
-            JNZ LOOP1       	; loop till you finish all 4 elements
-            SUB SI,4         	; to go back to the 1st element
-            MOV AH,[SI]         ; AX =  0  N1  0  N3
-            MOV BH,[SI+1]       ; BX =  0  N2  0  N4
-            MOV AL,[SI+2]       ; after shift
-            MOV BL,[SI+3]       ; AX =  N1  0  N3  0
-            SHL AX,4            ; BX =  0  N2  0  N4
-            OR  AX,BX           ; after or
-            RET                 ; AX =  N1  N2  N3  N4
-SETCMP      ENDP  
+SETCMP      	PROC 
+            		MOV CX,4			; 4-number input
+LOOP1:	    		CMP [SI],39H			; is it a number ?
+            		JBE NUM         		; if yes, go to num case
+            		JA  LETR    			; o.w. go to letr case
+NUM:        		SUB [SI],30H			; change the number character from ascii to hexa
+            		JMP INCR         		; increment the counter and goto next element
+LETR:       		CMP [SI],46H			; find if the letter in upper or lower case
+            		JBE UPPER			; case1 if it was upper
+            		JA  LOWER			; case2 if it was lower
+UPPER :     		SUB [SI],37h			; change the lower case letter from ascii to hexa
+            		JMP INCR 			; increment the counter and goto next element
+LOWER:      		SUB [SI],57H			; change the upper case letter from ascii to hexa	       		
+INCR:       		INC SI 				; goto next element
+            		DEC CX   			; sub from counter
+            		JNZ LOOP1       		; loop till you finish all 4 elements
+            		SUB SI,4         		; to go back to the 1st element
+            		MOV AH,[SI]         		; AX =  0  N1  0  N3
+            		MOV BH,[SI+1]       		; BX =  0  N2  0  N4
+            		MOV AL,[SI+2]       		; after shift
+            		MOV BL,[SI+3]       		; AX =  N1  0  N3  0
+            		SHL AX,4            		; BX =  0  N2  0  N4
+            		OR  AX,BX           		; after or
+            		RET                 		; AX =  N1  N2  N3  N4
+SETCMP      	ENDP  
 
 
-VALID       PROC				
+VALID       	PROC				
 			CALL NWLINE			; make a new line
-            MOV SI,0			; will act as index to each char in the string
-NXTLTR:     MOV AL,MSG3[SI]		; get first letter
-            CMP AL,0			; did the string end ?
-            JE  EOT				; if yes, go to end of text
-            MOV AH,0EH 			; if no, print the char and advance the cursor 
-            INT 10H				; (teletype output)
-            INC SI				; go to next letter
-            JMP NXTLTR			;
-EOT:		MOV CX,0FFH			; timer so the screen does not change too quickly
+            		MOV SI,0			; will act as index to each char in the string
+NXTLTR:     		MOV AL,MSG3[SI]			; get first letter
+            		CMP AL,0			; did the string end ?
+            		JE  EOT				; if yes, go to end of text
+            		MOV AH,0EH 			; if no, print the char and advance the cursor 
+            		INT 10H				; (teletype output)
+            		INC SI				; go to next letter
+            		JMP NXTLTR			;
+EOT:			MOV CX,0FFH			; timer so the screen does not change too quickly
 			LOOP $				;
-            JMP START			; reset the program
-VALID       ENDP
+            		JMP START			; reset the program
+VALID       	ENDP
 
 
 			END MAIN
