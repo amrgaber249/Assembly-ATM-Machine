@@ -65,7 +65,7 @@ WLCM		PROC
 WLCM		ENDP	
 
 
-VCRD      	  PROC
+VCRD      	PROC
             		LEA  DX,MSG4			; get message 
 			MOV  AH,09H			; display string function 
 			INT  21H			; display message 
@@ -74,10 +74,10 @@ VCRD      	  PROC
 			CALL SETCMP			; put the card number into AX for vladiation
 			CALL CRDCHCK			; check if card is valid
 			RET
-VCRD       	 ENDP
+VCRD       	ENDP
 
 
-VPWD       	 PROC
+VPWD       	PROC
             		LEA  DX,MSG1			; get message 
 			MOV  AH,09H			; display string function 
 			INT  21H			; display message 
